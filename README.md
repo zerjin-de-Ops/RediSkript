@@ -17,7 +17,7 @@ Redis Message:
 on redis message:
   if redis channel is "world":
     broadcast "%redis message% %redis channel% %redis message date%"
- 
+
 command /sendredis <text> <text>:
   usage: /sendredis <message> <channel>
   trigger:
@@ -41,7 +41,7 @@ Syntax:
 variable[s] %strings% in [redis] [channel] %string%
 ```
 
-There is only one command: /reloadredis it fully reloads the configuration, you can reload IP, password, channels and everything else.
+There is only one command: **/reloadredis** it fully reloads the configuration, you can reload IP, password, channels and everything else.
 
 You only need to have matching configuration in every server for communication and a Redis server to connect to. I recommend using VPS for hosting redis server, I personally use VPS from humbleservers.com.
 
@@ -51,33 +51,48 @@ Redis:
   #a secure password that cannot be cracked, please change it!
   #it is also recommended to firewall your redis server with iptables so it can only be accessed by specific IP addresses
   Password: "yHy0d2zdBlRmaSPj3CiBwEv5V3XxBTLTrCsGW7ntBnzhfxPxXJS6Q1aTtR6DSfAtCZr2VxWnsungXHTcF94a4bsWEpGAvjL9XMU"
+  #hostname of your redis server, you can use free redis hosting (search for it online) if you do not have the ability to host your own redis server
+  #redis server is very lightweight, takes under 30 MB of RAM usually
   Host: "127.0.0.1"
   #must be 2 or higher, if you set to lower, the addon will automatically use 2 as a minimum
+  #do not edit MaxConnections if you do not know what you're doing
+  #it is only useful to increase this number to account for PING between distant servers and when you are sending a lot of messages constantly
   MaxConnections: 2
   #the default Redis port
   Port: 6379
   #time out in milliseconds, how long it should take before it decides that it is unable to connect when sending a message
-  #90000 = 90 seconds
-  TimeOut: 90000
+  #9000 = 9 seconds
+  TimeOut: 9000
   #also known as SSL, only use this if you're running Redis 6.0.6 or higher, older versions will not work correctly
-  #it encrypts your traffic and makes data exchange between distant servers completely secure
+  #it encrypts your traffic and makes data exchange between distant servers secure
   useTLS: false
-  #may be useful if you cannot use TLS due to use of older version of Redis
-  #however this will not encrypt the initial authentication password, only the messages sent
-  #it uses AES-128 SIV encryption which is secure enough for this
+  #EncryptMessages may be useful if you cannot use TLS due to use of older version of Redis or if you're paranoid about privacy and want to double encrypt your messages
+  #however this will not encrypt the initial authentication password, only the messages sent (use TLS for initial authentication password encryption)
+
+  #the encryption configuration must be the same across all servers in order to communicate
+
+  #use 16 characters long key for AES-128 encryption
+  #32 characters long key for AES-256 encryption
+  #AES-128 is faster, but less secure (but it is not crackable by today's technology as of 2020, may be crackable by quantum computers)
+  #the AES implementation used in RediSkript uses SIV mode, which makes the same key resistant to cracking for a big count of messages without the need of changing the key very often
   EncryptMessages: true
+  #EncryptionKey and MacKey must be different
   EncryptionKey: "16CHARACTERS KEY"
   MacKey: "16CHARACTERS KEY"
+
 
 #the channels from which this server can receive messages
 #you can always send messages to all channels!
 #you can add as many channels as you wish!
+
+#ideal setup is having one global channel and having one channel that represents server name, so you know who to send messages to
+#then a few other utility channels up to your needs
 Channels:
-  - "Channel1"
-  - "Channel2"
+  - "global"
+  - "servername"
   - "Channel3"
   ```
-  
+
 ## YourKit
 
 YourKit supports open source projects with innovative and intelligent tools for monitoring and profiling Java and .NET applications. YourKit is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler/), [YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/) and [YourKit YouMonitor](https://www.yourkit.com/youmonitor/).

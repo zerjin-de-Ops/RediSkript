@@ -7,3 +7,4 @@ depend: [Skript]
 commands:
   reloadredis:
     description: "Reload redis configuration & restart the connection."
+    permission: reload.redis
