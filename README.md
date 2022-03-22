@@ -48,7 +48,7 @@ Syntax:
 variable[s] %strings% in [redis] [channel] %string%
 ```
 
-#### Configuration
+### Configuration
 plugins/RediSkript/config.yml
 ```
 Redis:
