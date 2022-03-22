@@ -1,6 +1,7 @@
-[![RediSkript Build](https://github.com/Limework/RediSkript/actions/workflows/maven.yml/badge.svg?branch=master)](https://github.com/Limework/RediSkript/actions/workflows/maven.yml)
 
-RediSkript allows you to communicate between your servers with use of Redis, it's very fast and easy to use.
+
+## RediSkript 
+Allows you to communicate between your Minecraft servers with use of Redis and Skript, it's very fast and easy to use.
 
 Skript: https://github.com/SkriptLang/Skript
 
@@ -12,7 +13,7 @@ You can transfer any data in the form of text between your servers, you can prog
 
 It is developed and maintained by Govindas & the team of Govindas Limework developers.
 
-Redis Message:
+### Redis Message
 ```
 on redis message:
   if redis channel is "world":
@@ -24,7 +25,7 @@ command /sendredis <text> <text>:
     send redis message arg 1 to channel arg 2
     send redis message "hello world!" to channel "world"
 ```
-Managing variables:
+### Managing variables
 ```
 set variables "test::1", "test::2", "test::3" in channel "global" to 100
 #then use this in any server that listens to "global" redis channel and was online when the above line was executed:
@@ -47,7 +48,8 @@ There is only one command: **/reloadredis** it fully reloads the configuration, 
 
 You only need to have matching configuration in every server for communication and a Redis server to connect to. I recommend using VPS for hosting redis server, I personally use VPS from humbleservers.com.
 
-Configuration:
+#### Configuration
+plugins/RediSkript/config.yml
 ```
 Redis:
   #a secure password that cannot be cracked, please change it!
