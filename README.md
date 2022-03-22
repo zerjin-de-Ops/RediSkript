@@ -13,6 +13,10 @@ You can transfer any data in the form of text between your servers, you can prog
 
 It is developed and maintained by Govindas & the team of Govindas Limework developers.
 
+There is only one command: **/reloadredis** it fully reloads the configuration, you can reload IP, password, channels and everything else.
+
+You only need to have matching configuration in every server for communication and a Redis server to connect to. I recommend using a VPS for hosting redis server, but there also are free redis hosting options available.
+
 ### Redis Message
 ```
 on redis message:
@@ -43,10 +47,6 @@ Syntax:
 ```
 variable[s] %strings% in [redis] [channel] %string%
 ```
-
-There is only one command: **/reloadredis** it fully reloads the configuration, you can reload IP, password, channels and everything else.
-
-You only need to have matching configuration in every server for communication and a Redis server to connect to. I recommend using VPS for hosting redis server, I personally use VPS from humbleservers.com.
 
 #### Configuration
 plugins/RediSkript/config.yml
