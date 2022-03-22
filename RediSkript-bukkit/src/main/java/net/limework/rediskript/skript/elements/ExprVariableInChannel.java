@@ -73,7 +73,7 @@ public class ExprVariableInChannel extends SimpleExpression<Object> {
     @Override
     public Class<?>[] acceptChange(Changer.ChangeMode mode) {
         //if (mode == Changer.ChangeMode.DELETE || mode == Changer.ChangeMode.SET || mode == Changer.ChangeMode.ADD || mode == Changer.ChangeMode.REMOVE)
-        if (mode == Changer.ChangeMode.DELETE || mode == Changer.ChangeMode.SET)
+        if (mode == Changer.ChangeMode.DELETE || mode == Changer.ChangeMode.SET || mode == Changer.ChangeMode.ADD || mode == Changer.ChangeMode.REMOVE)
             return CollectionUtils.array(Object.class);
 
         return null;

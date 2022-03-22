@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 
 public class RedisController extends BinaryJedisPubSub implements Runnable {
 
@@ -134,51 +135,117 @@ public class RedisController extends BinaryJedisPubSub implements Runnable {
 
                         //Transfer variables between servers
 
-                        JSONArray variableNames = j.getJSONArray("Names");
+                        JSONArray varNames = j.getJSONArray("Names");
                         Object inputValue;
                         String changeValue = null;
-                        JSONArray variableValues = null;
+                        JSONArray varValues = null;
                         if (!j.isNull("Values")) {
-                            variableValues = j.getJSONArray("Values");
+                            varValues = j.getJSONArray("Values");
                         }
-                        for (int i = 0; i < variableNames.length(); i++) {
-
+                        for (int i = 0; i < varNames.length(); i++) {
+                            String varName = varNames.get(i).toString();
                             if (j.isNull("Values")) {
-                                //only check for SET here, because null has to be ignored in all other cases
 
+                                // only check for SET here, because null has to be ignored in all other cases
                                 if (j.getString("Operation").equals("SET")) {
-                                    Variables.setVariable(variableNames.get(i).toString(), null, null, false);
+                                    Variables.setVariable(varName, null, null, false);
                                 }
 
                             } else {
-                                if (!variableValues.isNull(i)) {
-                                    changeValue = variableValues.get(i).toString();
-                                }
+                                if (!varValues.isNull(i)) {
+                                    changeValue = varValues.get(i).toString();
+                               }
                                 String[] inputs = changeValue.split("\\^", 2);
                                 inputValue = Classes.deserialize(inputs[0], Base64.getDecoder().decode(inputs[1]));
                                 switch (j.getString("Operation")) {
                                     case "ADD":
-                                        //I will add this once someone tells me how to remove from Skript variable
-                                        //because using SET operation has issues with inconvertible types (Double and Long)
-                                        //variable = (Variable) Variables.getVariable(variableNames.get(i).toString(), null, false);
-                                        // variable.change(null, (Object[]) inputValue, Changer.ChangeMode.REMOVE);
+                                        if (varName.charAt(varName.length() - 1) == '*') {
+                                            plugin.getLogger().log(Level.WARNING, "Adding to {::*} variables in RediSkript is not supported. Variable name: " + varName);
+                                            continue;
+                                        }
+                                        Object variable = Variables.getVariable(varName, null, false);
+                                        if (variable == null) {
+                                            Variables.setVariable(varName, inputValue, null, false);
+                                        } else if (variable instanceof Long) {
+                                            if (inputValue instanceof Long) {
+                                                Variables.setVariable(varName, (Long) variable + (Long) inputValue, null, false);
+                                            } else if (inputValue instanceof Double) {
+
+                                                // convert Long variable to Double
+                                                variable = Double.valueOf((Long) variable);
+                                                Variables.setVariable(varName, (Double) variable + (Double) inputValue, null, false);
+                                            } else {
+                                                // Not supported input type
+                                                plugin.getLogger().log(Level.WARNING, "Unsupported add action of data type (" + inputValue.getClass().getName() + ") on variable: " + varName);
+                                                continue;
+                                            }
+                                        } else if (variable instanceof Double) {
+                                            if (inputValue instanceof Double) {
+                                                Variables.setVariable(varName, (Double) variable + (Double) inputValue, null, false);
+                                            } else if (inputValue instanceof Long) {
+                                                Variables.setVariable(varName, (Double) variable + ((Long) inputValue).doubleValue(), null, false);
+                                            } else {
+                                                // Not supported input type
+                                                plugin.getLogger().log(Level.WARNING, "Unsupported add action of data type (" + inputValue.getClass().getName() + ") on variable: " + varName);
+                                                continue;
+                                            }
+                                        } else {
+                                            // Not supported input type
+                                            plugin.getLogger().log(Level.WARNING, "Unsupported variable type in add action (" + variable.getClass().getName() + ") on variable: " + varName);
+                                            continue;
+                                        }
+                                        break;
                                     case "REMOVE":
-                                        //I will add this once someone tells me how to remove from Skript variable
-                                        //because using SET operation has issues with inconvertible types (Double and Long)
-                                        //variable = (Variable) Variables.getVariable(variableNames.get(i).toString(), null, false);
-                                        // variable.change(null, (Object[]) inputValue, Changer.ChangeMode.REMOVE);
+                                        if (varName.charAt(varName.length() - 1) == '*') {
+                                            plugin.getLogger().log(Level.WARNING, "Removing from {::*} variables in RediSkript is not supported. Variable name: " + varName);
+                                            continue;
+                                        }
+                                        variable = Variables.getVariable(varName, null, false);
+                                        if (variable == null) {
+                                            if (inputValue instanceof Long) {
+                                                Variables.setVariable(varName, -(Long) inputValue, null, false);
+                                            } else if (inputValue instanceof Double) {
+                                                Variables.setVariable(varName, -(Double) inputValue, null, false);
+                                            } else {
+                                                // Not supported input type
+                                                plugin.getLogger().log(Level.WARNING, "Unsupported remove action of data type (" + inputValue.getClass().getName() + ") on variable: " + varName);
+                                                continue;
+                                            }
+                                        } else if (variable instanceof Long) {
+                                            if (inputValue instanceof Long) {
+                                                Variables.setVariable(varName, (Long) variable - (Long) inputValue, null, false);
+                                            } else if (inputValue instanceof Double) {
+
+                                                // convert Long variable to Double
+                                                variable = Double.valueOf((Long) variable);
+                                                Variables.setVariable(varName, (Double) variable - (Double) inputValue, null, false);
+                                            } else {
+                                                // Not supported input type
+                                                plugin.getLogger().log(Level.WARNING, "Unsupported remove action of data type (" + inputValue.getClass().getName() + ") on variable: " + varName);
+                                                continue;
+                                            }
+                                        } else if (variable instanceof Double) {
+                                            if (inputValue instanceof Double) {
+                                                Variables.setVariable(varName, (Double) variable - (Double) inputValue, null, false);
+                                            } else if (inputValue instanceof Long) {
+                                                Variables.setVariable(varName, (Double) variable - ((Long) inputValue).doubleValue(), null, false);
+                                            }
+                                        } else {
+                                            // Not supported input type
+                                            plugin.getLogger().log(Level.WARNING, "Unsupported variable type in remove action (" + variable.getClass().getName() + ") on variable: " + varName);
+                                            continue;
+                                        }
                                         break;
                                     case "SET":
-                                        String variableName = variableNames.get(i).toString();
-                                        
+
                                         //this is needed, because setting a {variable::*} causes weird behavior, like
                                         //1st set operation is no data, 2nd has data, etc.
                                         //if you set it to null before action, it works correctly
-
-                                        if (variableName.charAt(variableName.length()-1) == '*') {
-                                            Variables.setVariable(variableName, null, null, false);
-                                       }
-                                        Variables.setVariable(variableNames.get(i).toString(), inputValue, null, false);
+                                        if (varName.charAt(varName.length() - 1) == '*') {
+                                            Variables.setVariable(varName, null, null, false);
+                                        }
+                                        Variables.setVariable(varNames.get(i).toString(), inputValue, null, false);
+                                        break;
 
                                 }
                             }
