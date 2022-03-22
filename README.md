@@ -30,6 +30,8 @@ set variables "test::1", "test::2", "test::3" in channel "global" to 100
 #then use this in any server that listens to "global" redis channel and was online when the above line was executed:
 send "%{test::*}%" #outputs 100, 100 and 100
 
+add 100 to variables "test::1" and "test::2" in channel "global"
+remove 10 from variable "test::1" in channel "global"
 delete variables "test::*" in channel "global"
 
 set variable "test::%uuid of player%" in channel "playerdata" to tool of player
@@ -72,13 +74,12 @@ Redis:
   #the encryption configuration must be the same across all servers in order to communicate
 
   #use 16 characters long key for AES-128 encryption
-  #32 characters long key for AES-256 encryption
-  #AES-128 is faster, but less secure (but it is not crackable by today's technology as of 2020, may be crackable by quantum computers)
+  #32 characters long key for AES-256 encryption (recommended)
   #the AES implementation used in RediSkript uses SIV mode, which makes the same key resistant to cracking for a big count of messages without the need of changing the key very often
   EncryptMessages: true
   #EncryptionKey and MacKey must be different
-  EncryptionKey: "16CHARACTERS KEY"
-  MacKey: "16CHARACTERS KEY"
+  EncryptionKey: "32CHARACTERS KEY"
+  MacKey: "32CHARACTERS KEY"
 
 
 #the channels from which this server can receive messages
