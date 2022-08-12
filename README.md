@@ -5,9 +5,7 @@ Allows you to communicate between your Minecraft servers with use of Redis and S
 
 Skript: https://github.com/SkriptLang/Skript
 
-RediSkript spigot page: https://www.spigotmc.org/resources/rediskript-communicate-between-servers-with-ease.85067/
-
-Jedis: https://github.com/redis/jedis
+RediSkript spigot page: https://www.spigotmc.org/resources/rediskript-communicate-between-servers-with-ease.85067/s
 
 Minecraft server version supported: **1.8.8+** (On 1.8, may need to use a fork of Skript)
 
