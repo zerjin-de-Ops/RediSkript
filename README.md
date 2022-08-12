@@ -9,6 +9,8 @@ RediSkript spigot page: https://www.spigotmc.org/resources/rediskript-communicat
 
 Jedis: https://github.com/redis/jedis
 
+Minecraft server version supported: **1.8.8+** (On 1.8, may need to use a fork of Skript)
+
 You can transfer any data in the form of text between your servers, you can program it to execute a set of instructions on the server depending on the redis message, etc. This can be used for making scripts that sync data between all servers and much more!
 
 It is developed and maintained by Govindas & the team of Govindas Limework developers.
