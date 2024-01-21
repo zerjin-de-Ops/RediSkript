@@ -179,8 +179,12 @@ public class RedisController extends BinaryJedisPubSub implements Runnable {
                                     if (variable == null) {
                                         Variables.setVariable(varName, inputValue, null, false);
                                     } else if (variable instanceof Long) {
+                                        if (inputValue instanceof Integer) {
+                                            inputValue = Long.valueOf((Integer) inputValue);
+                                        }
                                         if (inputValue instanceof Long) {
                                             Variables.setVariable(varName, (Long) variable + (Long) inputValue, null, false);
+                                            
                                         } else if (inputValue instanceof Double) {
 
                                             // convert Long variable to Double
@@ -192,6 +196,9 @@ public class RedisController extends BinaryJedisPubSub implements Runnable {
                                             continue;
                                         }
                                     } else if (variable instanceof Double) {
+                                        if (inputValue instanceof Integer) {
+                                            inputValue = Double.valueOf((Integer) inputValue);
+                                        }
                                         if (inputValue instanceof Double) {
                                             Variables.setVariable(varName, (Double) variable + (Double) inputValue, null, false);
                                         } else if (inputValue instanceof Long) {
@@ -200,6 +207,18 @@ public class RedisController extends BinaryJedisPubSub implements Runnable {
                                             // Not supported input type
                                             plugin.getLogger().log(Level.WARNING, "Unsupported add action of data type (" + inputValue.getClass().getName() + ") on variable: " + varName);
                                             continue;
+                                        }
+                                    } else if (variable instanceof Integer) {
+                                        if (inputValue instanceof Integer) {
+                                            Variables.setVariable(varName, (Integer) variable + (Integer) inputValue, null, false);
+                                        } else if (inputValue instanceof Double) {
+                                            // convert Integer variable to Double
+                                            variable = Double.valueOf((Integer) variable);
+                                            Variables.setVariable(varName, (Double) variable + (Double) inputValue, null, false);
+                                        } else if (inputValue instanceof Long) {
+                                            // convert Integer variable to Long
+                                            variable = Long.valueOf((Integer) variable);
+                                            Variables.setVariable(varName, (Long) variable + (Long) inputValue, null, false);
                                         }
                                     } else {
                                         // Not supported input type
@@ -218,12 +237,17 @@ public class RedisController extends BinaryJedisPubSub implements Runnable {
                                             Variables.setVariable(varName, -(Long) inputValue, null, false);
                                         } else if (inputValue instanceof Double) {
                                             Variables.setVariable(varName, -(Double) inputValue, null, false);
+                                        } else if (inputValue instanceof Integer) {
+                                            Variables.setVariable(varName, -(Integer) inputValue, null, false);
                                         } else {
                                             // Not supported input type
                                             plugin.getLogger().log(Level.WARNING, "Unsupported remove action of data type (" + inputValue.getClass().getName() + ") on variable: " + varName);
                                             continue;
                                         }
                                     } else if (variable instanceof Long) {
+                                        if (inputValue instanceof Integer) {
+                                            inputValue = Long.valueOf((Integer) inputValue);
+                                        }
                                         if (inputValue instanceof Long) {
                                             Variables.setVariable(varName, (Long) variable - (Long) inputValue, null, false);
                                         } else if (inputValue instanceof Double) {
@@ -237,10 +261,25 @@ public class RedisController extends BinaryJedisPubSub implements Runnable {
                                             continue;
                                         }
                                     } else if (variable instanceof Double) {
+                                        if (inputValue instanceof Integer) {
+                                            inputValue = Double.valueOf((Integer) inputValue);
+                                        }
                                         if (inputValue instanceof Double) {
                                             Variables.setVariable(varName, (Double) variable - (Double) inputValue, null, false);
                                         } else if (inputValue instanceof Long) {
                                             Variables.setVariable(varName, (Double) variable - ((Long) inputValue).doubleValue(), null, false);
+                                        }
+                                    } else if (variable instanceof Integer) {
+                                        if (inputValue instanceof Integer) {
+                                            Variables.setVariable(varName, (Integer) variable - (Integer) inputValue, null, false);
+                                        } else if (inputValue instanceof Long) {
+                                            // convert Integer variable to Long
+                                            variable = Long.valueOf((Integer) variable);
+                                            Variables.setVariable(varName, (Long) variable - (Long) inputValue, null, false);
+                                        } else if (inputValue instanceof Double) {
+                                            // convert Integer variable to Double
+                                            variable = Double.valueOf((Integer) variable);
+                                            Variables.setVariable(varName, (Double) variable - (Double) inputValue, null, false);
                                         }
                                     } else {
                                         // Not supported input type
