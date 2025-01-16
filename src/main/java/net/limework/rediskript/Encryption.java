@@ -1,4 +1,4 @@
-package net.limework.rediskript.data;
+package net.limework.rediskript;
 
 import org.cryptomator.siv.SivMode;
 import org.cryptomator.siv.UnauthenticCiphertextException;

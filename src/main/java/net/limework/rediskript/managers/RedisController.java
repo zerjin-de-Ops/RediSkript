@@ -3,7 +3,7 @@ package net.limework.rediskript.managers;
 import ch.njol.skript.registrations.Classes;
 import ch.njol.skript.variables.Variables;
 import net.limework.rediskript.RediSkript;
-import net.limework.rediskript.data.Encryption;
+import net.limework.rediskript.Encryption;
 import net.limework.rediskript.events.RedisMessageEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;

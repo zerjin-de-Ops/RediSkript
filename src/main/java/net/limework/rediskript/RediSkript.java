@@ -45,26 +45,11 @@ public class RediSkript extends JavaPlugin {
             Skript.registerExpression(ExprVariableInChannel.class, Object.class, ExpressionType.PROPERTY, "variable[s] %strings% in [redis] [channel] %string%");
 
             Skript.registerExpression(ExprChannel.class, String.class, ExpressionType.SIMPLE, "redis channel");
-            EventValues.registerEventValue(RedisMessageEvent.class, String.class, new Getter<String, RedisMessageEvent>() {
-                @Override
-                public String get(RedisMessageEvent e) {
-                    return e.getChannelName();
-                }
-            }, 0);
+            EventValues.registerEventValue(RedisMessageEvent.class, String.class, RedisMessageEvent::getChannelName, 0);
             Skript.registerExpression(ExprMessage.class, String.class, ExpressionType.SIMPLE, "redis message");
-            EventValues.registerEventValue(RedisMessageEvent.class, String.class, new Getter<String, RedisMessageEvent>() {
-                @Override
-                public String get(RedisMessageEvent e) {
-                    return e.getMessage();
-                }
-            }, 0);
+            EventValues.registerEventValue(RedisMessageEvent.class, String.class, RedisMessageEvent::getMessage, 0);
             Skript.registerExpression(ExprMessageDate.class, Date.class, ExpressionType.SIMPLE, "redis message date");
-            EventValues.registerEventValue(RedisMessageEvent.class, Date.class, new Getter<Date, RedisMessageEvent>() {
-                @Override
-                public Date get(RedisMessageEvent e) {
-                    return new Date(e.getDate());
-                }
-            }, 0);
+            EventValues.registerEventValue(RedisMessageEvent.class, Date.class, (e) -> new Date(e.getDate()), 0);
         } catch (IOException e) {
             e.printStackTrace();
         }

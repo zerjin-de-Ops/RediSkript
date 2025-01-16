@@ -29,7 +29,7 @@ public class ExprChannel extends SimpleExpression<String> {
 
     @Override
     public boolean init(final Expression<?>[] expressions, final int matchedPattern, final Kleenean isDelayed, final SkriptParser.ParseResult parseResult) {
-        if (!ScriptLoader.isCurrentEvent(RedisMessageEvent.class)) {
+        if (!getParser().isCurrentEvent(RedisMessageEvent.class)) {
             Skript.error("Cannot use 'redis channel' outside of a redis message event", ErrorQuality.SEMANTIC_ERROR);
             return false;
         }

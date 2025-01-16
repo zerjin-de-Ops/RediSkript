@@ -7,11 +7,12 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.skript.log.ErrorQuality;
+import ch.njol.skript.util.Date;
 import ch.njol.util.Kleenean;
 import net.limework.rediskript.events.RedisMessageEvent;
 import org.bukkit.event.Event;
 
-public class ExprMessage extends SimpleExpression<String> {
+public class ExprMessageDate extends SimpleExpression<Date> {
 
 
     @Override
@@ -20,29 +21,28 @@ public class ExprMessage extends SimpleExpression<String> {
     }
 
     @Override
-    public Class<? extends String> getReturnType() {
-        return String.class;
+    public Class<? extends Date> getReturnType() {
+        return Date.class;
     }
 
     @Override
-    public String toString(Event event, boolean debug) {
-        return "redis message";
+    public String toString(Event event, boolean b) {
+        return "redis message date";
     }
 
     @Override
     public boolean init(final Expression<?>[] expressions, final int matchedPattern, final Kleenean isDelayed, final SkriptParser.ParseResult parseResult) {
-        if (!ScriptLoader.isCurrentEvent(RedisMessageEvent.class)) {
-            Skript.error("Cannot use 'redis message' outside of a redis message event", ErrorQuality.SEMANTIC_ERROR);
+        if (!getParser().isCurrentEvent(RedisMessageEvent.class)) {
+            Skript.error("Cannot use 'redis message date' outside of a redis message event", ErrorQuality.SEMANTIC_ERROR);
             return false;
         }
         return true;
     }
-
-
     @Override
-    protected String[] get(Event e) {
+    protected Date[] get(Event e) {
         if (e instanceof RedisMessageEvent){
-            return new String[]{((RedisMessageEvent) e).getMessage()};
+            long date = ((RedisMessageEvent) e).getDate();
+            return new Date[]{new Date(date)};
         }
         return null;
     }
