@@ -5,7 +5,6 @@ import ch.njol.skript.SkriptAddon;
 import ch.njol.skript.lang.ExpressionType;
 import ch.njol.skript.registrations.EventValues;
 import ch.njol.skript.util.Date;
-import ch.njol.skript.util.Getter;
 import net.limework.rediskript.commands.CommandReloadRedis;
 import net.limework.rediskript.events.RedisMessageEvent;
 import net.limework.rediskript.managers.RedisController;
@@ -15,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 public class RediSkript extends JavaPlugin {
 
@@ -51,7 +51,7 @@ public class RediSkript extends JavaPlugin {
             Skript.registerExpression(ExprMessageDate.class, Date.class, ExpressionType.SIMPLE, "redis message date");
             EventValues.registerEventValue(RedisMessageEvent.class, Date.class, (e) -> new Date(e.getDate()), 0);
         } catch (IOException e) {
-            e.printStackTrace();
+            getLogger().log(Level.SEVERE, "Error registering Skript", e);
         }
     }
 

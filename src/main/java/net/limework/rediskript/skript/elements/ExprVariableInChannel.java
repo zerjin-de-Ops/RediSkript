@@ -9,7 +9,6 @@ import ch.njol.skript.variables.SerializedVariable;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 import net.limework.rediskript.RediSkript;
-import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 
 import java.util.Base64;

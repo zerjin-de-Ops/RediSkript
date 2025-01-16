@@ -95,8 +95,7 @@ public class RedisController extends BinaryJedisPubSub implements Runnable {
         } catch (Exception e) {
             isConnecting.set(false);
             isConnectionBroken.set(true);
-            plugin.sendErrorLogs("Connection to Redis server has failed! Please check your details in the configuration.");
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Connection to Redis server has failed! Please check your details in the configuration.", e);
         }
     }
 
@@ -106,8 +105,7 @@ public class RedisController extends BinaryJedisPubSub implements Runnable {
             try {
                 this.unsubscribe();
             } catch (Exception e) {
-                plugin.sendErrorLogs("Something went wrong during unsubscribing...");
-                e.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, "Something went wrong during unsubscribing...", e);
             }
         }
         jedisPool.close();
@@ -123,7 +121,7 @@ public class RedisController extends BinaryJedisPubSub implements Runnable {
                 try {
                     receivedMessage = encryption.decrypt(message);
                 } catch (UnauthenticCiphertextException | IllegalBlockSizeException e) {
-                    e.printStackTrace();
+                    plugin.getLogger().log(Level.SEVERE, "Error receiving message", e);
                 }
 
             } else {
@@ -156,7 +154,7 @@ public class RedisController extends BinaryJedisPubSub implements Runnable {
                     }
                     for (int i = 0; i < varNames.length(); i++) {
                         String varName = varNames.get(i).toString();
-                        if (j.isNull("Values")) {
+                        if (varValues != null) {
 
                             // only check for SET here, because null has to be ignored in all other cases
                             if (j.getString("Operation").equals("SET")) {
@@ -304,9 +302,8 @@ public class RedisController extends BinaryJedisPubSub implements Runnable {
                 }
             }
         } catch (Exception e) {
-            plugin.sendErrorLogs("&cI got a message that was empty from channel " + channelString + " please check your code that you used to send the message. Message content:");
-            plugin.sendErrorLogs(receivedMessage);
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "I got a message that was empty from channel " + channelString + " please check your code that you used to send the message.", e);
+            plugin.getLogger().severe(receivedMessage);
         }
     }
 
@@ -347,8 +344,7 @@ public class RedisController extends BinaryJedisPubSub implements Runnable {
                     try (Jedis j = jedisPool.getResource()) {
                         j.publish(channel.getBytes(StandardCharsets.UTF_8), message);
                     } catch (Exception e) {
-                        plugin.sendErrorLogs("Error sending redis message!");
-                        e.printStackTrace();
+                        plugin.getLogger().log(Level.SEVERE, "Error sending redis message", e);
                     }
                 });
             } else {
@@ -357,12 +353,12 @@ public class RedisController extends BinaryJedisPubSub implements Runnable {
                 try (Jedis j = jedisPool.getResource()) {
                     j.publish(channel.getBytes(StandardCharsets.UTF_8), message);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    plugin.getLogger().log(Level.SEVERE, "Error sending redis message", e);
                 }
 
             }
         } catch (JedisConnectionException exception) {
-            exception.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Error in redis connection", exception);
         }
     }
 

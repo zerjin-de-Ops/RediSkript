@@ -1,7 +1,6 @@
 package net.limework.rediskript.skript.elements;
 
 
-import ch.njol.skript.ScriptLoader;
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;

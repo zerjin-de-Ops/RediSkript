@@ -7,15 +7,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandReloadRedis implements CommandExecutor {
-    private RediSkript plugin;
+    private final RediSkript plugin;
     public CommandReloadRedis(RediSkript plugin) {
         this.plugin = plugin;
     }
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player) {
             //not using bungee TextComponent because it is not present in 1.8.8
             sender.sendMessage((ChatColor.translateAlternateColorCodes('&'
@@ -24,12 +24,7 @@ public class CommandReloadRedis implements CommandExecutor {
         }
 
         //reload redis asynchronously to not lag the main thread (was doing a few seconds lagspike at most)
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                plugin.reloadRedis();
-            }
-        }.runTaskAsynchronously(plugin);
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, plugin::reloadRedis);
 
         //not sending to sender, because this command can only be executed via console
         Bukkit.getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eReloaded channels, encryption and login details!"));

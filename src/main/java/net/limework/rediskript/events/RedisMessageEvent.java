@@ -2,14 +2,15 @@ package net.limework.rediskript.events;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class RedisMessageEvent extends Event {
     private final static HandlerList HANDLERS = new HandlerList();
 
-    private String channelName;
-    private String message;
-    private long date;
+    private final String channelName;
+    private final String message;
+    private final long date;
 
     public RedisMessageEvent(String channelName , String message, long date) {
         super(false);
@@ -20,12 +21,12 @@ public class RedisMessageEvent extends Event {
 
 
     @Override
-    public String getEventName() {
+    public @NotNull String getEventName() {
         return super.getEventName();
     }
 
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
     public static HandlerList getHandlerList() {
